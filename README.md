@@ -1,8 +1,12 @@
-# React + Vite
+## 🔐 Login Tests
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+In this project, we use Cypress to test various login scenarios. The following test cases are included:
 
-Currently, two official plugins are available:
+- ✅ Successful login with valid email and password.
+- 📧 Login attempt with an invalid email.
+- ❌ Login attempt with both invalid email and invalid password.
+- 📋 Login attempt with valid email and password but without accepting terms.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+These tests aim to ensure that the login form functions correctly and user validations are handled appropriately.
+
+Additionally, we have utilized ⚡️ Vite and ⚛️ React for building the application, and 💅 Bootstrap and 🎨 Reactstrap for styling.
