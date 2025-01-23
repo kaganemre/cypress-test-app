@@ -22,3 +22,11 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Cypress test output
+cypress/screenshots/
+cypress/videos/
+
+# Cypress configuration files
+cypress.json
+cypress.config.js

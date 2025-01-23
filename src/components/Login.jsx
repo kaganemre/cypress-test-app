@@ -9,7 +9,6 @@ import {
 } from "reactstrap";
 import { useHistory } from "react-router-dom";
 import "./index.css";
-import axios from "axios";
 
 const initialForm = {
   email: "",
@@ -22,13 +21,17 @@ const passwordRegex = RegExp("^.{1,6}$");
 
 const errorMessages = {
   email: "Please enter a valid email address",
-  password: " Your input must be at most 6 characters long.",
+  password: "Your input must be at most 6 characters long.",
 };
 
 export default function Login() {
   const [form, setForm] = useState(initialForm);
   const [isValid, setIsValid] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState({
+    email: null,
+    password: null,
+    terms: null,
+  });
 
   const history = useHistory();
 
@@ -48,36 +51,26 @@ export default function Login() {
     } else if (name === "terms") {
       isValid = value;
     }
-    setErrors((prevErrors) => ({ ...prevErrors, [name]: !isValid }));
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: isValid }));
   };
 
   useEffect(() => {
     const validation = Object.values(errors).every((val) => val === true);
     setIsValid(validation);
-  }, [form]);
+  }, [errors]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    console.log(isValid);
+    console.log(errors);
     if (isValid) {
-      axios
-        .get("https://6540a96145bedb25bfc247b4.mockapi.io/api/login")
-        .then((res) => {
-          const user = res.data.find(
-            (item) => item.password == form.password && item.email == form.email
-          );
-          if (user) {
-            setForm(initialForm);
-            history.push("/main");
-          } else {
-            history.push("/error");
-          }
-        });
+      history.push("/success");
     }
   };
 
   return (
     <div className="container d-flex justify-content-center align-items-center">
-      <Form onSubmit={handleSubmit} className="border p-4 bg-light">
+      <Form onSubmit={handleSubmit} className="border p-4 bg-light" noValidate>
         <h4 className="text-center mb-3">Login</h4>
         <FormGroup>
           <Label for="exampleEmail">Email</Label>
@@ -88,9 +81,10 @@ export default function Login() {
             type="email"
             onChange={handleChange}
             value={form.email}
-            invalid={errors.email}
+            valid={errors.email === true}
+            invalid={errors.email === false}
           />
-          {errors.email && <FormFeedback>{errorMessages.email}</FormFeedback>}
+          {!errors.email && <FormFeedback>{errorMessages.email}</FormFeedback>}
         </FormGroup>
         <FormGroup>
           <Label for="examplePassword">Password</Label>
@@ -101,9 +95,10 @@ export default function Login() {
             type="password"
             onChange={handleChange}
             value={form.password}
-            invalid={errors.password}
+            valid={errors.password === true}
+            invalid={errors.password === false}
           />
-          {errors.password && (
+          {!errors.password && (
             <FormFeedback>{errorMessages.password}</FormFeedback>
           )}
         </FormGroup>
@@ -120,7 +115,7 @@ export default function Login() {
           </Label>
         </FormGroup>
         <FormGroup className="text-center p-4">
-          <Button color="primary" disabled={!form.terms}>
+          <Button type="submit" color="primary" disabled={!isValid}>
             Sign In
           </Button>
         </FormGroup>
