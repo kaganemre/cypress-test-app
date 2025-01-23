@@ -18,13 +18,11 @@ const initialForm = {
 };
 
 const emailRegex = new RegExp("^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$");
-const passwordRegex = new RegExp(
-  "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$"
-);
+const passwordRegex = RegExp("^.{1,6}$");
 
 const errorMessages = {
   email: "Please enter a valid email address",
-  password: "Password must be at least 4 characters long",
+  password: " Your input must be at most 6 characters long.",
 };
 
 export default function Login() {
@@ -38,36 +36,25 @@ export default function Login() {
     let { name, value, type, checked } = event.target;
     value = type === "checkbox" ? checked : value;
     setForm({ ...form, [name]: value });
-
-    if (name === "email") {
-      if (emailRegex.test(value)) {
-        setErrors({ ...errors, [name]: false });
-      } else {
-        setErrors({ ...errors, [name]: true });
-      }
-    }
-
-    if (name === "password") {
-      if (passwordRegex.test(value)) {
-        setErrors({ ...errors, [name]: false });
-      } else {
-        setErrors({ ...errors, [name]: true });
-      }
-    }
-
-    if (name === "terms") {
-      if (checked) {
-        setErrors({ ...errors, [name]: false });
-      } else {
-        setErrors({ ...errors, [name]: true });
-      }
-    }
-
-    useEffect(() => {
-      const validation = Object.values(errors).every((val) => val === true);
-      setIsValid(validation);
-    }, [form]);
+    validateField(name, value);
   };
+
+  const validateField = (name, value) => {
+    let isValid;
+    if (name === "email") {
+      isValid = emailRegex.test(value);
+    } else if (name === "password") {
+      isValid = passwordRegex.test(value);
+    } else if (name === "terms") {
+      isValid = value;
+    }
+    setErrors((prevErrors) => ({ ...prevErrors, [name]: !isValid }));
+  };
+
+  useEffect(() => {
+    const validation = Object.values(errors).every((val) => val === true);
+    setIsValid(validation);
+  }, [form]);
 
   const handleSubmit = (event) => {
     event.preventDefault();
